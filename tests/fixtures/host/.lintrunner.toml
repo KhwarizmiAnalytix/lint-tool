@@ -1,0 +1,10 @@
+[[linter]]
+code = 'NEWLINE'
+include_patterns = ['**']
+command = [
+    'python3',
+    '-m',
+    'lint_tool.adapters.newlines_linter',
+    '--',
+    '@{{PATHSFILE}}',
+]

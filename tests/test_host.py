@@ -67,3 +67,23 @@ def test_import_allowlist_adapter_imports() -> None:
 
     assert callable(pip_init.main)
     assert hasattr(import_linter, "check_file")
+
+
+def test_stdlib_module_names_includes_common_modules() -> None:
+    from lint_tool.adapters.import_linter import _stdlib_module_names
+
+    names = _stdlib_module_names()
+    assert {"os", "sys", "json", "pathlib"} <= names
+
+
+def test_stdlib_module_names_falls_back_before_python_3_10(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Python 3.9 lacks sys.stdlib_module_names; simulate that here."""
+    import sys as sys_module
+
+    from lint_tool.adapters.import_linter import _stdlib_module_names
+
+    monkeypatch.delattr(sys_module, "stdlib_module_names", raising=False)
+    names = _stdlib_module_names()
+    assert {"os", "sys", "json"} <= names

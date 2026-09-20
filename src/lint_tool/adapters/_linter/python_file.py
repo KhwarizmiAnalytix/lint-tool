@@ -5,7 +5,6 @@ from functools import cached_property
 from pathlib import Path
 from tokenize import TokenInfo, generate_tokens
 from typing import TYPE_CHECKING
-from typing_extensions import Self
 
 from . import EMPTY_TOKENS, NO_TOKEN, ParseError
 from .blocks import blocks
@@ -15,6 +14,8 @@ from .sets import LineWithSets
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+    from typing_extensions import Self
 
     from .block import Block
 

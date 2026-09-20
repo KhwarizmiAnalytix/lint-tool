@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import Any
-from typing_extensions import Never
+from typing import TYPE_CHECKING, Any
+
+
+if TYPE_CHECKING:
+    from typing_extensions import Never
 
 
 class ArgumentParser(argparse.ArgumentParser):

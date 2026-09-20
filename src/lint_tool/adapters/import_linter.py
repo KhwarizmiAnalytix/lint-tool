@@ -47,8 +47,28 @@ LINTER_CODE = "IMPORT_LINTER"
 CURRENT_FILE_NAME = os.path.basename(__file__)
 _MODULE_NAME_ALLOW_LIST: set[str] = set()
 
+
+def _stdlib_module_names() -> frozenset[str]:
+    """Names of every standard-library module.
+
+    ``sys.stdlib_module_names`` only exists on 3.10+; on 3.9 approximate it
+    by listing modules found in the interpreter's stdlib directory, which
+    covers the same ground without adding a runtime dependency.
+    """
+    if hasattr(sys, "stdlib_module_names"):
+        return frozenset(sys.stdlib_module_names)
+    import pkgutil
+    import sysconfig
+
+    names = set(sys.builtin_module_names)
+    stdlib_dir = sysconfig.get_paths().get("stdlib")
+    if stdlib_dir:
+        names.update(info.name for info in pkgutil.iter_modules([stdlib_dir]))
+    return frozenset(names)
+
+
 # Add builtin modules of python.
-_MODULE_NAME_ALLOW_LIST.update(sys.stdlib_module_names)
+_MODULE_NAME_ALLOW_LIST.update(_stdlib_module_names())
 
 
 def _load_pyproject() -> dict:
